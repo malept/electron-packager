@@ -5,11 +5,10 @@ const debug = require('debug')('electron-packager')
 const fs = require('fs-extra')
 const path = require('path')
 const pify = require('pify')
-
-const ignore = require('./ignore')
-const pruneModules = require('./prune').pruneModules
+const Walker = require('pruner').Walker
 
 const common = require('./common')
+const ignore = require('./ignore')
 
 class App {
   constructor (opts, templatePath) {
@@ -132,7 +131,8 @@ class App {
 
   prune () {
     if (this.opts.prune || this.opts.prune === undefined) {
-      return pruneModules(this.opts, this.originalResourcesAppDir)
+      const walker = new Walker(this.originalResourcesAppDir)
+      return walker.prune()
         .then(() => common.promisifyHooks(this.opts.afterPrune, [this.originalResourcesAppDir, this.opts.electronVersion, this.opts.platform, this.opts.arch]))
     }
 

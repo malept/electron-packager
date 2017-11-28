@@ -6,9 +6,6 @@ const path = require('path')
 const targets = require('./targets')
 
 const DEFAULT_IGNORES = [
-  '/node_modules/electron($|/)',
-  '/node_modules/electron-prebuilt(-compile)?($|/)',
-  '/node_modules/electron-packager($|/)',
   '/\\.git($|/)',
   '/node_modules/\\.bin($|/)',
   '\\.o(bj)?$'

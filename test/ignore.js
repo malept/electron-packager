@@ -40,6 +40,7 @@ function createIgnoreOutDirTest (opts, distPath) {
     t.timeoutAfter(config.timeout)
 
     opts.name = 'basicTest'
+    opts.prune = false
 
     var appDir = util.getWorkCwd()
     opts.dir = appDir
@@ -72,6 +73,7 @@ function createIgnoreImplicitOutDirTest (opts) {
     t.timeoutAfter(config.timeout)
 
     opts.name = 'basicTest'
+    opts.prune = false
 
     var appDir = util.getWorkCwd()
     opts.dir = appDir

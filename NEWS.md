@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+### Changed
+
+* `prune` exclusively uses the `pruner` module
+* `electron`, `electron-prebuilt`, `electron-prebuilt-compile`, and `electron-packager` are no
+  longer ignored by default, due to how the `pruner` module works
+
+### Removed
+
+* `packageManager` option
+
 ## [10.1.0] - 2017-11-19
 
 ### Added

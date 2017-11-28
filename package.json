@@ -24,7 +24,6 @@
     "extract-zip": "^1.0.3",
     "fs-extra": "^4.0.0",
     "get-package-info": "^1.0.0",
-    "mz": "^2.6.0",
     "nodeify": "^1.0.1",
     "parse-author": "^2.0.0",
     "pify": "^3.0.0",
@@ -46,11 +45,11 @@
     "eslint-plugin-promise": "^3.5.0",
     "eslint-plugin-standard": "^3.0.0",
     "eslint-plugin-tape": "^1.1.0",
+    "mz": "^2.6.0",
     "nyc": "^11.0.0",
     "pkg-up": "^2.0.0",
     "rimraf": "^2.3.2",
-    "tape": "^4.0.0",
-    "which": "^1.2.14"
+    "tape": "^4.0.0"
   },
   "engines": {
     "node": ">= 4.0"
