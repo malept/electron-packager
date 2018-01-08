@@ -11,9 +11,13 @@ const ELECTRON_MODULES = [
 
 class Pruner {
   constructor (dir) {
-    this.baseDir = dir
+    this.baseDir = this.normalizePath(dir)
     this.walker = new floraColossus.Walker(dir)
     this.walkedTree = false
+  }
+
+  normalizePath (path) {
+    return path.replace(/\\/g, '/')
   }
 
   pruneModule (name) {
@@ -22,7 +26,7 @@ class Pruner {
     } else {
       return this.walker.walkTree()
         .then(allModules => {
-          this.moduleMap = new Map(allModules.map(module => [module.path.replace(/\\/g, '/').replace(this.baseDir, ''), module]))
+          this.moduleMap = new Map(allModules.map(module => [this.normalizePath(module.path).replace(this.baseDir, ''), module]))
           if (process.platform === 'win32') console.log(this.moduleMap)
           this.walkedTree = true
           return null
