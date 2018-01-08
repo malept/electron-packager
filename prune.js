@@ -22,7 +22,7 @@ class Pruner {
     } else {
       return this.walker.walkTree()
         .then(allModules => {
-          this.moduleMap = new Map(allModules.map(module => [module.path.replace(this.baseDir, ''), module]))
+          this.moduleMap = new Map(allModules.map(module => [module.path.replace('\\', '/').replace(this.baseDir, ''), module]))
           this.walkedTree = true
           return null
         }).then(() => this.isProductionModule(name))
