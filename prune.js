@@ -1,45 +1,50 @@
 'use strict'
 
-const child = require('mz/child_process')
-const debug = require('debug')('electron-packager')
-const Walker = require('pruner').Walker
+const common = require('./common')
+const floraColossus = require('flora-colossus')
 
-const knownPackageManagers = ['npm', 'cnpm', 'yarn']
+const ELECTRON_MODULES = [
+  'electron',
+  'electron-prebuilt',
+  'electron-prebuilt-compile'
+]
 
-function pruneCommand (packageManager) {
-  switch (packageManager) {
-    case 'npm':
-    case 'cnpm':
-      return `${packageManager} prune --production`
-    case 'yarn':
-      return `${packageManager} install --production --no-bin-links --no-lockfile`
+class Pruner {
+  constructor (dir) {
+    this.baseDir = dir
+    this.walker = new floraColossus.Walker(dir)
+    this.walkedTree = false
   }
-}
 
-function pruneModules (opts, appPath) {
-  if (opts.packageManager === false) {
-    const walker = new Walker(appPath)
-    return walker.prune()
-  } else {
-    const packageManager = opts.packageManager || 'npm'
-
-    /* istanbul ignore if */
-    if (packageManager === 'cnpm' && process.platform === 'win32') {
-      return Promise.reject(new Error('cnpm support does not currently work with Windows, see: https://github.com/electron-userland/electron-packager/issues/515#issuecomment-297604044'))
-    }
-
-    const command = pruneCommand(packageManager)
-
-    if (command) {
-      debug(`Pruning modules via: ${command}`)
-      return child.exec(command, { cwd: appPath })
+  pruneModule (name) {
+    if (this.walkedTree) {
+      return this.isProductionModule(name)
     } else {
-      return Promise.reject(new Error(`Unknown package manager "${packageManager}". Known package managers: ${knownPackageManagers.join(', ')}`))
+      return this.walker.walkTree()
+        .then(allModules => {
+          this.moduleMap = new Map(allModules.map(module => [module.path.replace(this.baseDir, ''), module]))
+          this.walkedTree = true
+          return null
+        }).then(() => this.isProductionModule(name))
     }
+  }
+
+  isProductionModule (name) {
+    const module = this.moduleMap.get(name)
+    if (!module) return false
+
+    if (ELECTRON_MODULES.some(moduleName => name.endsWith(`/${moduleName}`))) {
+      /* istanbul ignore if */
+      if (module.depType !== floraColossus.DepType.DEV) {
+        common.warning(`Found '${module.name}' but not as a devDependency, pruning anyway`)
+      }
+      return false
+    }
+
+    return module.depType !== floraColossus.DepType.DEV
   }
 }
 
 module.exports = {
-  pruneCommand: pruneCommand,
-  pruneModules: pruneModules
+  Pruner: Pruner
 }

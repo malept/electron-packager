@@ -3,12 +3,10 @@
 const common = require('./common')
 const debug = require('debug')('electron-packager')
 const path = require('path')
+const Pruner = require('./prune').Pruner
 const targets = require('./targets')
 
 const DEFAULT_IGNORES = [
-  '/node_modules/electron($|/)',
-  '/node_modules/electron-prebuilt(-compile)?($|/)',
-  '/node_modules/electron-packager($|/)',
   '/\\.git($|/)',
   '/node_modules/\\.bin($|/)',
   '\\.o(bj)?$'
@@ -67,6 +65,11 @@ function userIgnoreFilter (opts) {
   }
 
   let outIgnores = generateOutIgnores(opts)
+  let pruner
+
+  if (opts.prune) {
+    pruner = new Pruner(opts.dir)
+  }
 
   return function filter (file) {
     if (outIgnores.indexOf(file) !== -1) {
@@ -78,6 +81,10 @@ function userIgnoreFilter (opts) {
     if (path.sep === '\\') {
       // convert slashes so unix-format ignores work
       name = name.replace(/\\/g, '/')
+    }
+
+    if (pruner && name.startsWith('/node_modules/')) {
+      return pruner.pruneModule(name)
     }
 
     return ignoreFunc(name)
