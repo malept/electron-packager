@@ -16,6 +16,7 @@ cache:
 branches:
   only:
   - master
+  - prune-via-js-only
 
 install:
 - ps: Install-Product node $env:nodejs_version $env:platform

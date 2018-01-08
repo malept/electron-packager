@@ -27,6 +27,7 @@ after_success: npm run codecov
 branches:
   only:
   - master
+  - prune-via-js-only
   - /^v\d+\.\d+\.\d+/
 env:
   global:
