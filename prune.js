@@ -22,7 +22,7 @@ class Pruner {
     } else {
       return this.walker.walkTree()
         .then(allModules => {
-          if (process.platform === 'win32') console.log(allModules)
+          if (process.platform === 'win32') console.log(this.baseDir, allModules)
           this.moduleMap = new Map(allModules.map(module => [module.path.replace('\\', '/').replace(this.baseDir, ''), module]))
           this.walkedTree = true
           return null
