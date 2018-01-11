@@ -27,7 +27,6 @@ class Pruner {
       return this.walker.walkTree()
         .then(allModules => {
           this.moduleMap = new Map(allModules.map(module => [this.normalizePath(module.path).replace(this.baseDir, ''), module]))
-          if (process.platform === 'win32') console.log(this.moduleMap)
           this.walkedTree = true
           return null
         }).then(() => this.isProductionModule(name))
