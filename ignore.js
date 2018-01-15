@@ -3,7 +3,7 @@
 const common = require('./common')
 const debug = require('debug')('electron-packager')
 const path = require('path')
-const Pruner = require('./prune').Pruner
+const prune = require('./prune')
 const targets = require('./targets')
 
 const DEFAULT_IGNORES = [
@@ -68,7 +68,7 @@ function userIgnoreFilter (opts) {
   let pruner
 
   if (opts.prune) {
-    pruner = new Pruner(opts.dir)
+    pruner = new prune.Pruner(opts.dir)
   }
 
   return function filter (file) {
@@ -84,7 +84,8 @@ function userIgnoreFilter (opts) {
     }
 
     if (pruner && name.startsWith('/node_modules/')) {
-      return pruner.pruneModule(name)
+      return prune.isModule(file)
+        .then(isModule => isModule ? pruner.pruneModule(name) : ignoreFunc(name))
     }
 
     return ignoreFunc(name)

@@ -4,6 +4,21 @@ const fs = require('fs-extra')
 const path = require('path')
 const util = require('./_util')
 
+function checkDependency (t, resourcesPath, moduleName, moduleExists) {
+  const assertion = moduleExists ? 'should' : 'should NOT'
+  const message = `module dependency '${moduleName}' ${assertion} exist under app/node_modules`
+  const modulePath = path.join(resourcesPath, 'app', 'node_modules', moduleName)
+  return fs.pathExists(modulePath)
+    .then(exists => t.is(moduleExists, exists, message))
+    .then(() => modulePath)
+}
+
+function assertDependencyExists (t, resourcesPath, moduleName) {
+  return checkDependency(t, resourcesPath, moduleName, true)
+    .then(modulePath => fs.stat(modulePath))
+    .then(stats => t.true(stats.isDirectory(), 'module is a directory'))
+}
+
 function createPruneOptionTest (t, baseOpts, prune, testMessage) {
   const opts = Object.assign({}, baseOpts, {
     name: 'pruneTest',
@@ -11,24 +26,15 @@ function createPruneOptionTest (t, baseOpts, prune, testMessage) {
     prune: prune
   })
 
-  let modulePath
   let resourcesPath
 
   return util.packageAndEnsureResourcesPath(t, opts)
     .then(generatedResourcesPath => {
       resourcesPath = generatedResourcesPath
-      modulePath = path.join(resourcesPath, 'app', 'node_modules', 'run-series')
-      return fs.pathExists(modulePath)
-    }).then(exists => {
-      t.true(exists, 'module dependency should exist under app/node_modules')
-      return fs.stat(modulePath)
-    }).then(stats => {
-      t.true(stats.isDirectory(), 'module is a directory')
-      return fs.pathExists(path.join(resourcesPath, 'app', 'node_modules', 'run-waterfall'))
-    }).then(exists => {
-      t.is(!prune, exists, testMessage)
-      return fs.pathExists(path.join(resourcesPath, 'app', 'node_modules', 'electron-prebuilt'))
-    }).then(exists => t.is(!prune, exists, testMessage))
+      return assertDependencyExists(t, resourcesPath, 'run-series')
+    }).then(() => assertDependencyExists(t, resourcesPath, '@types/node'))
+    .then(() => checkDependency(t, resourcesPath, 'run-waterfall', !prune))
+    .then(() => checkDependency(t, resourcesPath, 'electron-prebuilt', !prune))
 }
 
 util.testSinglePlatform('prune test', (t, baseOpts) => {
