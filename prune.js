@@ -42,8 +42,8 @@ class Pruner {
   isProductionModule (name) {
     const module = this.moduleMap.get(name)
     if (!module) {
-      // dirs starting with @ are for scoped modules
-      return path.basename(name).startsWith('@')
+      common.warning(`Could not find '${name}' in list of known modules, pruning`)
+      return false
     }
 
     if (ELECTRON_MODULES.some(moduleName => name.endsWith(`/${moduleName}`))) {
