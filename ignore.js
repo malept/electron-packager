@@ -28,8 +28,8 @@ function generateIgnores (opts) {
 }
 
 function generateOutIgnores (opts) {
-  let normalizedOut = opts.out ? path.resolve(opts.out) : null
-  let outIgnores = []
+  const normalizedOut = opts.out ? path.resolve(opts.out) : null
+  const outIgnores = []
   if (normalizedOut === null || normalizedOut === process.cwd()) {
     for (const platform of Object.keys(targets.officialPlatformArchCombos)) {
       for (const arch of targets.officialPlatformArchCombos[platform]) {
@@ -64,12 +64,8 @@ function userIgnoreFilter (opts) {
     }
   }
 
-  let outIgnores = generateOutIgnores(opts)
-  let pruner
-
-  if (opts.prune) {
-    pruner = new prune.Pruner(opts.dir)
-  }
+  const outIgnores = generateOutIgnores(opts)
+  const pruner = opts.prune ? new prune.Pruner(opts.dir) : null
 
   return function filter (file) {
     if (outIgnores.indexOf(file) !== -1) {
