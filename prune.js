@@ -46,15 +46,19 @@ class Pruner {
       return false
     }
 
-    if (ELECTRON_MODULES.some(moduleName => name.endsWith(`/${moduleName}`))) {
-      /* istanbul ignore if */
-      if (module.depType !== floraColossus.DepType.DEV) {
-        common.warning(`Found '${module.name}' but not as a devDependency, pruning anyway`)
-      }
+    const isDevDep = module.depType !== floraColossus.DepType.DEV
+
+    /* istanbul ignore if */
+    if (this.isProductionElectronModule(name, isDevDep)) {
+      common.warning(`Found '${module.name}' but not as a devDependency, pruning anyway`)
       return false
     }
 
-    return module.depType !== floraColossus.DepType.DEV
+    return isDevDep
+  }
+
+  isProductionElectronModule (name, isDevDep) {
+    return ELECTRON_MODULES.some(moduleName => name.endsWith(`/${moduleName}`)) && !isDevDep
   }
 }
 
