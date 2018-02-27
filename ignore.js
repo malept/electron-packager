@@ -75,8 +75,7 @@ function userIgnoreFilter (opts) {
     let name = file.split(path.resolve(opts.dir))[1]
 
     if (path.sep === '\\') {
-      // convert slashes so unix-format ignores work
-      name = name.replace(/\\/g, '/')
+      name = common.normalizePath(name)
     }
 
     if (pruner && name.startsWith('/node_modules/')) {

@@ -1,7 +1,7 @@
 'use strict'
 
 const common = require('./common')
-const floraColossus = require('flora-colossus')
+const galactus = require('galactus')
 const fs = require('fs-extra')
 const path = require('path')
 
@@ -13,48 +13,48 @@ const ELECTRON_MODULES = [
 
 class Pruner {
   constructor (dir) {
-    this.baseDir = this.normalizePath(dir)
-    this.walker = new floraColossus.Walker(dir)
+    this.baseDir = common.normalizePath(dir)
+    this.galactus = new galactus.DestroyerOfModules({
+      rootDirectory: dir,
+      shouldKeepModuleTest: (module, isDevDep) => this.shouldKeepModule(module, isDevDep)
+    })
     this.walkedTree = false
   }
 
-  normalizePath (path) {
-    return path.replace(/\\/g, '/')
+  normalizeModulePath (modulePath) {
+    return common.normalizePath(modulePath).replace(this.baseDir, '')
   }
 
-  normalizeModulePath (module) {
-    return this.normalizePath(module.path).replace(this.baseDir, '')
+  setModuleMap (moduleMap) {
+    this.moduleMap = new Map(Object.keys(moduleMap).map(modulePath => [this.normalizeModulePath(modulePath), moduleMap[modulePath]]))
+    this.walkedTree = true
   }
 
   pruneModule (name) {
     if (this.walkedTree) {
       return this.isProductionModule(name)
     } else {
-      return this.walker.walkTree()
-        .then(allModules => {
-          this.moduleMap = new Map(allModules.map(module => [this.normalizeModulePath(module), module]))
-          this.walkedTree = true
-          return null
-        }).then(() => this.isProductionModule(name))
+      return this.galactus.collectKeptModules()
+        .then(moduleMap => this.setModuleMap(moduleMap))
+        .then(() => this.isProductionModule(name))
     }
   }
 
-  isProductionModule (name) {
-    const module = this.moduleMap.get(name)
-    if (!module) {
-      common.warning(`Could not find '${name}' in list of known modules, pruning`)
+  shouldKeepModule (module, isDevDep) {
+    if (isDevDep || module.depType === galactus.DepType.ROOT) {
       return false
     }
 
-    const isDevDep = module.depType !== floraColossus.DepType.DEV
-
-    /* istanbul ignore if */
-    if (this.isProductionElectronModule(name, isDevDep)) {
+    if (this.isProductionElectronModule(module.name, isDevDep)) {
       common.warning(`Found '${module.name}' but not as a devDependency, pruning anyway`)
       return false
     }
 
-    return isDevDep
+    return true
+  }
+
+  isProductionModule (name) {
+    return !!this.moduleMap.get(name)
   }
 
   isProductionElectronModule (name, isDevDep) {
@@ -64,15 +64,7 @@ class Pruner {
 
 module.exports = {
   isModule: function isModule (pathToCheck) {
-    return fs.stat(pathToCheck)
-      .then(stats => {
-        if (stats.isDirectory()) {
-          const packageJSON = path.join(pathToCheck, 'package.json')
-          return fs.pathExists(packageJSON)
-        } else {
-          return false
-        }
-      })
+    return fs.pathExists(path.join(pathToCheck, 'package.json'))
   },
   Pruner: Pruner
 }
