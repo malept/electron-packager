@@ -26,7 +26,10 @@ class Pruner {
   }
 
   setModuleMap (moduleMap) {
-    this.moduleMap = new Map(Object.keys(moduleMap).map(modulePath => [this.normalizeModulePath(modulePath), moduleMap[modulePath]]))
+    this.moduleMap = new Map()
+    for (const [modulePath, module] of moduleMap) {
+      this.moduleMap.set(this.normalizeModulePath(modulePath), module)
+    }
     this.walkedTree = true
   }
 
