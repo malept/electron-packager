@@ -6,7 +6,7 @@
 
 ### Changed
 
-* `prune` exclusively utilizes the `flora-colossus` module for pruning devDependencies, instead of
+* `prune` exclusively utilizes the `galactus` module for pruning devDependencies, instead of
   depending on package managers
 * `electron-packager` is no longer ignored by default
 * A warning is emitted when an Electron module is a production dependency
