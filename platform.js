@@ -9,7 +9,6 @@ const pify = require('pify')
 const common = require('./common')
 const hooks = require('./hooks')
 const ignore = require('./ignore')
-const pruneModules = require('./prune').pruneModules
 
 class App {
   constructor (opts, templatePath) {
