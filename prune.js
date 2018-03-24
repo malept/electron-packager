@@ -21,16 +21,13 @@ class Pruner {
     this.walkedTree = false
   }
 
-  normalizeModulePath (modulePath) {
-    return common.normalizePath(modulePath).replace(this.baseDir, '')
-  }
-
   setModuleMap (moduleMap) {
     this.moduleMap = new Map()
+    // destructured assignments are in Node 6
     for (const modulePair of moduleMap) {
       const modulePath = modulePair[0]
       const module = modulePair[1]
-      this.moduleMap.set(this.normalizeModulePath(modulePath), module)
+      this.moduleMap.set(`/${modulePath}`, module)
     }
     this.walkedTree = true
   }
@@ -39,7 +36,7 @@ class Pruner {
     if (this.walkedTree) {
       return this.isProductionModule(name)
     } else {
-      return this.galactus.collectKeptModules()
+      return this.galactus.collectKeptModules({ relativePaths: true })
         .then(moduleMap => this.setModuleMap(moduleMap))
         .then(() => this.isProductionModule(name))
     }
