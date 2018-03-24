@@ -110,7 +110,7 @@ class App {
       this.opts.arch
     ])).then(() => {
       if (this.opts.prune) {
-        return common.promisifyHooks(this.opts.afterPrune, [
+        return hooks.promisifyHooks(this.opts.afterPrune, [
           this.originalResourcesAppDir,
           this.opts.electronVersion,
           this.opts.platform,
