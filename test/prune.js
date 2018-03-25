@@ -41,5 +41,15 @@ util.testSinglePlatform('prune test', (t, baseOpts) => {
   return createPruneOptionTest(t, baseOpts, true, 'package.json devDependency should NOT exist under app/node_modules')
 })
 
+util.testSinglePlatform('prune electron in dependencies', (t, baseOpts) => {
+  const opts = Object.assign({}, baseOpts, {
+    name: 'pruneElectronTest',
+    dir: util.fixtureSubdir('electron-in-dependencies')
+  })
+
+  return util.packageAndEnsureResourcesPath(t, opts)
+    .then(resourcesPath => checkDependency(t, resourcesPath, 'electron', false))
+})
+
 util.testSinglePlatform('prune: false test', createPruneOptionTest, false,
                         'package.json devDependency should exist under app/node_modules')

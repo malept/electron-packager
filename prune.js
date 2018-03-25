@@ -60,7 +60,8 @@ class Pruner {
   }
 
   isProductionElectronModule (name, isDevDep) {
-    return ELECTRON_MODULES.some(moduleName => name.endsWith(`/${moduleName}`)) && !isDevDep
+    // Node 6 has Array.prototype.includes
+    return ELECTRON_MODULES.indexOf(name) !== -1 && !isDevDep
   }
 }
 
