@@ -47,7 +47,8 @@ class Pruner {
       return false
     }
 
-    if (this.isProductionElectronModule(module.name, isDevDep)) {
+    // Node 6 has Array.prototype.includes
+    if (ELECTRON_MODULES.indexOf(module.name) !== -1) {
       common.warning(`Found '${module.name}' but not as a devDependency, pruning anyway`)
       return false
     }
@@ -57,11 +58,6 @@ class Pruner {
 
   isProductionModule (name) {
     return !!this.moduleMap.get(name)
-  }
-
-  isProductionElectronModule (name, isDevDep) {
-    // Node 6 has Array.prototype.includes
-    return ELECTRON_MODULES.indexOf(name) !== -1 && !isDevDep
   }
 }
 
