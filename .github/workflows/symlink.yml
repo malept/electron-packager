@@ -27,10 +27,11 @@ jobs:
         run: |
           cd ../electron-quick-start
           node_modules/.bin/electron-packager . --platform=darwin
+          tar -czf app.tgz electron-quick-start-darwin-x64
       - uses: actions/upload-artifact@v1
         with:
           name: app
-          path: ../electron-quick-start/electron-quick-start-darwin-x64
+          path: ../electron-quick-start/app.tgz
   test:
     needs: build
     runs-on: macOS-latest
@@ -38,7 +39,8 @@ jobs:
       - uses: actions/download-artifact@v1
         with:
           name: app
-          path: electron-quick-start-darwin-x64
+          path: app.tgz
       - name: Check symlink
         run: |
+          tar xf app.tgz
           ls -l "electron-quick-start-darwin-x64/electron-quick-start.app/Contents/Frameworks/Electron Framework.framework/"
