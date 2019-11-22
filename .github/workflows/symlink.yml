@@ -39,7 +39,6 @@ jobs:
       - uses: actions/download-artifact@v1
         with:
           name: app
-          path: app.tgz
       - name: Check symlink
         run: |
           tar xf app.tgz
