@@ -30,7 +30,7 @@ jobs:
       - uses: actions/upload-artifact@v1
         with:
           name: app
-          path: electron-quick-start-darwin-x64
+          path: ../electron-quick-start/electron-quick-start-darwin-x64
   test:
     needs: build
     runs-on: macOS-latest
