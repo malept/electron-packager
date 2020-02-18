@@ -13,8 +13,6 @@ import { ElectronDownloadRequestOptions as ElectronDownloadOptions } from '@elec
 import { NotarizeOptions } from 'electron-notarize';
 import { SignOptions } from 'electron-osx-sign';
 
-export = electronPackager;
-
 /**
  * This will:
  * - Find or download the correct release of Electron
@@ -179,7 +177,7 @@ declare namespace electronPackager {
      * When the value is a String, the filename of a plist file. Its contents are added to the app's plist.
      * When the value is an Object, an already-parsed plist data structure that is merged into the app's plist.
      */
-    extendInfo?: string | { [property: string]: any };
+    extendInfo?: string | { [property: string]: any }; // eslint-disable-line @typescript-eslint/no-explicit-any
     /**
      * The bundle identifier to use in the application helper's plist.
      */
@@ -210,3 +208,5 @@ declare namespace electronPackager {
     win32metadata?: Win32Metadata;
   }
 }
+
+export = electronPackager;

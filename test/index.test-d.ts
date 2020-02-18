@@ -5,18 +5,23 @@ function completeFunction(
   electronVersion: string,
   platform: string,
   arch: string,
-  callbackFn: () => void
-) {
+  callbackFn: () => void,
+): void {
   callbackFn();
 }
 
-function ignoreFunction(path: string) {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function ignoreFunction(path: string): boolean {
   return true;
 }
 
-function onCompleted(appPaths: string[]) {}
+function onCompleted(appPaths: string[]): void {
+  console.log(appPaths);
+}
 
-function onError(error: Error) {}
+function onError(error: Error): void {
+  console.error(error.message);
+}
 
 packager({
   dir: '.',
