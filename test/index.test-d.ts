@@ -1,9 +1,4 @@
-import packager = require('electron-packager');
-
-function callback(err: Error, appPaths: string[]) {
-    const msg = err.message;
-    const index = appPaths.indexOf('test');
-}
+import packager = require('..');
 
 function completeFunction(
     buildPath: string,
@@ -19,7 +14,7 @@ function ignoreFunction(path: string) {
     return true;
 }
 
-function onCompleted(appPaths: string | string[]) {}
+function onCompleted(appPaths: string[]) {}
 
 function onError(error: Error) {}
 
@@ -200,7 +195,7 @@ packager({
     osxNotarize: {
         appleId: 'My ID',
         appleIdPassword: 'Bad Password',
-    },
+    } as packager.ElectronNotarizeOptions,
     osxSign: {
         identity: 'myidentity',
         entitlements: 'path/to/my.entitlements',

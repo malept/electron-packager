@@ -3,6 +3,7 @@
   "version": "14.2.1",
   "description": "Customize and package your Electron app with OS-specific bundles (.app, .exe, etc.) via JS or CLI",
   "main": "src/index.js",
+  "types": "src/index.d.ts",
   "bin": {
     "electron-packager": "bin/electron-packager.js"
   },
@@ -22,6 +23,7 @@
     "docs/*.md",
     "NEWS.md",
     "src",
+    "src/index.d.ts",
     "usage.txt"
   ],
   "dependencies": {
@@ -56,7 +58,8 @@
     "eslint-plugin-standard": "^4.0.0",
     "nyc": "^15.0.0",
     "pkg-up": "^3.0.1",
-    "sinon": "^9.0.0"
+    "sinon": "^9.0.0",
+    "tsd": "^0.11.0"
   },
   "engines": {
     "node": ">= 10.0"
@@ -66,7 +69,8 @@
     "codecov": "nyc report --reporter=text-lcov > coverage.lcov && codecov",
     "coverage": "nyc npm run ava",
     "lint": "eslint .",
-    "test": "npm run lint && npm run coverage"
+    "test": "npm run lint && npm run tsd && npm run coverage",
+    "tsd": "tsd"
   },
   "directories": {
     "test": "test"
@@ -111,6 +115,9 @@
       "no-console": 0,
       "strict": "error"
     }
+  },
+  "tsd": {
+    "directory": "test"
   },
   "funding": {
     "url": "https://github.com/electron/electron-packager?sponsor=1"

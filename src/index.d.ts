@@ -1,21 +1,17 @@
-// Type definitions for electron-packager 14.0
-// Project: https://github.com/electron-userland/electron-packager
+// Originally based on the type definitions for electron-packager 14.0
+// Project: https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/electron-packager
 // Definitions by: Maxime LUCE <https://github.com/SomaticIT>
 //                 Juan Jimenez-Anca <https://github.com/cortopy>
 //                 John Kleinschmidt <https://github.com/jkleinsc>
 //                 Brendan Forster <https://github.com/shiftkey>
 //                 Mark Lee <https://github.com/malept>
 //                 Florian Keller <https://github.com/ffflorian>
-// Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
-// TypeScript Version: 2.9
 
 /// <reference types='node' />
 
-type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
-
 import { ElectronDownloadRequestOptions as ElectronDownloadOptions } from '@electron/get';
 import { NotarizeOptions } from 'electron-notarize';
-import { SignOptions as OsXSignOptions } from 'electron-osx-sign';
+import { SignOptions } from 'electron-osx-sign';
 
 export = electronPackager;
 
@@ -30,19 +26,11 @@ export = electronPackager;
  *
  * @returns A promise containing the path(s) to the newly created application(s)
  */
-declare function electronPackager(opts: electronPackager.Options): Promise<string | string[]>;
+declare function electronPackager(opts: electronPackager.Options): Promise<string[]>;
 
 declare namespace electronPackager {
-    /**
-     * Callback which is called when electron-packager is done.
-     *
-     * @param err - Contains errors if any.
-     * @param appPaths - Path(s) to the newly created application(s).
-     */
-    type finalCallback = (err: Error, appPaths: string | string[]) => void;
-
-    type ignoreFunction = (path: string) => boolean;
-    type onCompleteFn = (
+    type IgnoreFunction = (path: string) => boolean;
+    type HookFunction = (
         buildPath: string,
         electronVersion: string,
         platform: string,
@@ -58,13 +46,11 @@ declare namespace electronPackager {
         unpackDir?: string;
     }
 
-    // see https://github.com/electron-userland/electron-packager/blob/92d09bba34599283a794fd6f24b88470f0cb1074/src/mac.js#L340
-    interface ElectronOsXSignOptions
-        extends Omit<OsXSignOptions, 'app' | 'binaries' | 'identity' | 'platform' | 'version'> {
+    interface ElectronOsxSignOptions
+        extends Omit<SignOptions, 'app' | 'binaries' | 'identity' | 'platform' | 'version'> {
         identity?: string | true;
     }
 
-    // see https://github.com/electron-userland/electron-packager/blob/92d09bba34599283a794fd6f24b88470f0cb1074/src/mac.js#L372
     type ElectronNotarizeOptions = Omit<NotarizeOptions, 'appBundleId' | 'appPath'>;
 
     /**
@@ -87,9 +73,9 @@ declare namespace electronPackager {
         /**
          * Optional list of methods to call on completion of each process
          */
-        afterCopy?: onCompleteFn[];
-        afterExtract?: onCompleteFn[];
-        afterPrune?: onCompleteFn[];
+        afterCopy?: HookFunction[];
+        afterExtract?: HookFunction[];
+        afterPrune?: HookFunction[];
         /** Shortcut for `--arch=all --platform=all`. */
         all?: boolean;
         /**
@@ -149,7 +135,7 @@ declare namespace electronPackager {
          * One or more additional regular expression patterns which specify which files to ignore when copying files to create the app bundle(s).
          * The regular expressions are matched against the absolute path of a given file/directory to be copied.
          */
-        ignore?: RegExp | RegExp[] | ignoreFunction;
+        ignore?: RegExp | RegExp[] | IgnoreFunction;
         /**
          * The application name. If omitted, it will use the productName or name value from the nearest package.json
          */
@@ -209,7 +195,7 @@ declare namespace electronPackager {
         /**
          * If present, signs OS X target apps when the host platform is OS X and XCode is installed.
          */
-        osxSign?: boolean | ElectronOsXSignOptions;
+        osxSign?: boolean | ElectronOsxSignOptions;
 
         /** The URL protocol schemes the app supports. */
         protocols?: Array<{
