@@ -9,6 +9,7 @@
 
 /// <reference types='node' />
 
+import { CreateOptions as AsarOptions } from 'asar';
 import { ElectronDownloadRequestOptions as ElectronDownloadOptions } from '@electron/get';
 import { NotarizeOptions } from 'electron-notarize';
 import { SignOptions } from 'electron-osx-sign';
@@ -37,12 +38,6 @@ declare namespace electronPackager {
   ) => void;
   type arch = 'ia32' | 'x64' | 'armv7l' | 'arm64' | 'mips64el' | 'all';
   type platform = 'linux' | 'win32' | 'darwin' | 'mas' | 'all';
-
-  interface AsarOptions {
-    ordering?: string;
-    unpack?: string;
-    unpackDir?: string;
-  }
 
   interface ElectronOsxSignOptions
   extends Omit<SignOptions, 'app' | 'binaries' | 'identity' | 'platform' | 'version'> {
