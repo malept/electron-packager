@@ -1,4 +1,5 @@
-import packager = require('..');
+import { expectType } from 'tsd';
+import * as packager from '..';
 
 function completeFunction(
   buildPath: string,
@@ -15,15 +16,7 @@ function ignoreFunction(path: string): boolean {
   return true;
 }
 
-function onCompleted(appPaths: string[]): void {
-  console.log(appPaths);
-}
-
-function onError(error: Error): void {
-  console.error(error.message);
-}
-
-packager({
+expectType<Promise<string[]>>(packager({
   dir: '.',
   name: 'myapplication',
   platform: 'win32',
@@ -38,9 +31,9 @@ packager({
     'requested-execution-level': 'highestAvailable',
     'application-manifest': 'manifest.xml',
   },
-}).then(onCompleted).catch(onError);
+}))
 
-packager({
+await packager({
   dir: '.',
   name: 'myapplication',
   electronVersion: '0.34.0',
@@ -54,32 +47,32 @@ packager({
     'requested-execution-level': 'requireAdministrator',
     'application-manifest': 'manifest.xml',
   },
-}).then(onCompleted).catch(onError);
+})
 
-packager({
+await packager({
   dir: '.',
   name: 'myapplication',
   platform: 'all',
   arch: 'all',
   electronVersion: '0.34.0',
-}).then(onCompleted).catch(onError);
+})
 
-packager({
+await packager({
   dir: '.',
   name: 'myapplication',
   electronVersion: '0.34.0',
   all: true,
-}).then(onCompleted).catch(onError);
+})
 
-packager({
+await packager({
   dir: '.',
   name: 'myapplication',
   electronVersion: '0.34.0',
   arch: 'arm64',
   executableName: 'myapp',
-}).then(onCompleted).catch(onError);
+})
 
-packager({
+await packager({
   dir: '.',
   afterCopy: [completeFunction],
   afterExtract: [completeFunction],
@@ -113,9 +106,9 @@ packager({
     'requested-execution-level': 'asInvoker',
     'application-manifest': 'manifest.xml',
   },
-}).then(onCompleted).catch(onError);
+})
 
-packager({
+await packager({
   dir: '.',
   arch: 'x64',
   asar: true,
@@ -138,9 +131,9 @@ packager({
   extendInfo: 'plist.txt',
   helperBundleId: '23223f',
   osxSign: true,
-}).then(onCompleted).catch(onError);
+})
 
-packager({
+await packager({
   dir: '.',
   arch: 'armv7l',
   asar: {
@@ -156,17 +149,17 @@ packager({
   },
   ignore: ignoreFunction,
   platform: 'linux',
-}).then(onCompleted).catch(onError);
+})
 
-packager({
+await packager({
   dir: '.',
   arch: 'mips64el',
   electronVersion: '1.8.8',
   prebuiltAsar: 'prebuilt.asar',
   platform: 'linux',
-}).then(onCompleted).catch(onError);
+})
 
-packager({
+await packager({
   dir: '.',
   arch: ['ia32', 'x64'],
   download: {
@@ -194,4 +187,4 @@ packager({
       schemes: ['myapp', 'myapp2'],
     },
   ],
-}).then(onCompleted).catch(onError);
+})
