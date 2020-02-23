@@ -7,8 +7,6 @@
 //                 Mark Lee <https://github.com/malept>
 //                 Florian Keller <https://github.com/ffflorian>
 
-/// <reference types='node' />
-
 import { CreateOptions as AsarOptions } from 'asar';
 import { ElectronDownloadRequestOptions as ElectronDownloadOptions } from '@electron/get';
 import { NotarizeOptions } from 'electron-notarize';
