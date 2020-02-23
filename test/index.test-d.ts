@@ -31,7 +31,7 @@ expectType<Promise<string[]>>(packager({
     'requested-execution-level': 'highestAvailable',
     'application-manifest': 'manifest.xml',
   },
-}))
+}));
 
 await packager({
   dir: '.',
@@ -47,7 +47,7 @@ await packager({
     'requested-execution-level': 'requireAdministrator',
     'application-manifest': 'manifest.xml',
   },
-})
+});
 
 await packager({
   dir: '.',
@@ -55,14 +55,14 @@ await packager({
   platform: 'all',
   arch: 'all',
   electronVersion: '0.34.0',
-})
+});
 
 await packager({
   dir: '.',
   name: 'myapplication',
   electronVersion: '0.34.0',
   all: true,
-})
+});
 
 await packager({
   dir: '.',
@@ -70,7 +70,7 @@ await packager({
   electronVersion: '0.34.0',
   arch: 'arm64',
   executableName: 'myapp',
-})
+});
 
 await packager({
   dir: '.',
@@ -106,7 +106,7 @@ await packager({
     'requested-execution-level': 'asInvoker',
     'application-manifest': 'manifest.xml',
   },
-})
+});
 
 await packager({
   dir: '.',
@@ -131,7 +131,7 @@ await packager({
   extendInfo: 'plist.txt',
   helperBundleId: '23223f',
   osxSign: true,
-})
+});
 
 await packager({
   dir: '.',
@@ -149,7 +149,7 @@ await packager({
   },
   ignore: ignoreFunction,
   platform: 'linux',
-})
+});
 
 await packager({
   dir: '.',
@@ -157,7 +157,7 @@ await packager({
   electronVersion: '1.8.8',
   prebuiltAsar: 'prebuilt.asar',
   platform: 'linux',
-})
+});
 
 await packager({
   dir: '.',
@@ -187,4 +187,4 @@ await packager({
       schemes: ['myapp', 'myapp2'],
     },
   ],
-})
+});
