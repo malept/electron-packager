@@ -1,0 +1,11 @@
+{
+  "excludeExternals": true,
+  "excludePrivate": true,
+  "excludeProtected": true,
+  "includeDeclarations": true,
+  "inputFiles": [
+    "src/index.d.ts"
+  ],
+  "mode": "file",
+  "out": "typedoc"
+}
