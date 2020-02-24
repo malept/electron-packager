@@ -80,9 +80,7 @@ await packager({
   appCopyright: 'Copyright',
   appVersion: '1.0',
   arch: 'ia32',
-  asar: false,
   buildVersion: '1.2.3',
-  derefSymlinks: true,
   download: {
     cacheRoot: './zips',
     mirrorOptions: {
@@ -94,7 +92,6 @@ await packager({
   ignore: /ab+c/,
   out: 'out',
   overwrite: true,
-  prune: true,
   quiet: true,
   tmpdir: '/tmp',
   win32metadata: {
@@ -121,10 +118,8 @@ await packager({
   },
   extraResource: ['foo.js', 'bar.js'],
   ignore: [/ab+c/, new RegExp('abc')],
-  overwrite: false,
   platform: 'darwin',
   prune: false,
-  quiet: false,
   tmpdir: 'false',
   appBundleId: '123456',
   appCategoryType: 'public.app-category.developer-tools',
