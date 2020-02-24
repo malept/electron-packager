@@ -37,17 +37,16 @@ declare namespace electronPackager {
   type arch = 'ia32' | 'x64' | 'armv7l' | 'arm64' | 'mips64el' | 'all';
   type platform = 'linux' | 'win32' | 'darwin' | 'mas' | 'all';
 
-  interface ElectronOsxSignOptions
-  extends Omit<SignOptions, 'app' | 'binaries' | 'identity' | 'platform' | 'version'> {
+  type OsxSignOptions = Omit<SignOptions, 'app' | 'binaries' | 'identity' | 'platform' | 'version'> & {
     identity?: string | true;
   }
 
-  type ElectronNotarizeOptions = Omit<NotarizeOptions, 'appBundleId' | 'appPath'>;
+  type OsxNotarizeOptions = Omit<NotarizeOptions, 'appBundleId' | 'appPath'>;
 
   /**
    * Object (also known as a "hash") of application metadata to embed into the executable
    */
-  interface Win32Metadata {
+  type Win32MetadataOptions = {
     CompanyName?: string;
     FileDescription?: string;
     OriginalFilename?: string;
@@ -182,11 +181,11 @@ declare namespace electronPackager {
     /**
      * If present, notarizes OS X target apps when the host platform is OS X and XCode is installed.
      */
-    osxNotarize?: ElectronNotarizeOptions;
+    osxNotarize?: OsxNotarizeOptions;
     /**
      * If present, signs OS X target apps when the host platform is OS X and XCode is installed.
      */
-    osxSign?: boolean | ElectronOsxSignOptions;
+    osxSign?: boolean | OsxSignOptions;
 
     /** The URL protocol schemes the app supports. */
     protocols?: Array<{
@@ -198,7 +197,7 @@ declare namespace electronPackager {
      * Windows targets only
      */
 
-    win32metadata?: Win32Metadata;
+    win32metadata?: Win32MetadataOptions;
   }
 }
 
