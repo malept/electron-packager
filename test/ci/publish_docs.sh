@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 
 if test -z "$PUBLISH_BRANCH"; then
     PUBLISH_BRANCH=gh-pages
@@ -8,7 +8,7 @@ npm run typedoc
 
 if ! git branch --list | grep --quiet $PUBLISH_BRANCH; then
     git checkout --orphan $PUBLISH_BRANCH
-    git rm --cached --recursive .
+    git rm --cached -r .
     echo typedoc > .gitignore
     touch .nojekyll
 fi
