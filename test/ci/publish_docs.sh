@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/bash -xe
 
 if test -z "$PUBLISH_BRANCH"; then
     PUBLISH_BRANCH=gh-pages
