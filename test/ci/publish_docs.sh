@@ -8,8 +8,8 @@ npm run typedoc
 
 if ! git branch --list | grep --quiet $PUBLISH_BRANCH; then
     git checkout --orphan $PUBLISH_BRANCH
+    git rm --cached .gitignore
     git rm --force -r .
-    echo typedoc > .gitignore
     touch .nojekyll
 fi
 
