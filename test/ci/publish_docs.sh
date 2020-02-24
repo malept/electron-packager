@@ -1,10 +1,17 @@
 #!/bin/bash -xe
 
+GIT_REVISION="$1"
+
 if test -z "$PUBLISH_BRANCH"; then
     PUBLISH_BRANCH=gh-pages
 fi
 
-npm run typedoc
+if test -z "$GIT_REVISION"; then
+    TYPEDOC_ARGS="-- --gitRevision $GIT_REVISION"
+    # TODO: if git revision looks like a version, set --includeVersion
+fi
+
+npm run typedoc $TYPEDOC_ARGS
 
 if ! git branch --list | grep --quiet $PUBLISH_BRANCH; then
     git checkout --orphan $PUBLISH_BRANCH
