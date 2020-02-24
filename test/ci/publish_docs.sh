@@ -6,9 +6,12 @@ if test -z "$PUBLISH_BRANCH"; then
     PUBLISH_BRANCH=gh-pages
 fi
 
+# TODO move typedoc args + .typedoc.json into its own typedoc script
 if test -z "$GIT_REVISION"; then
     TYPEDOC_ARGS="-- --gitRevision $GIT_REVISION"
-    # TODO: if git revision looks like a version, set --includeVersion
+    if test "${GIT_REVISION:0:1}" == "v"; then
+        TYPEDOC_ARGS="$TYPEDOC_ARGS --includeVersion"
+    fi
 fi
 
 npm run typedoc $TYPEDOC_ARGS
