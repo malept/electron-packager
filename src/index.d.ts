@@ -120,7 +120,7 @@ declare namespace electronPackager {
   /**
    * Defines URL protocol schemes to be used on macOS.
    */
-  interface macOSProtocol {
+  interface MacOSProtocol {
     /**
      * The descriptive name. Maps to the `CFBundleURLName` metadata property.
      */
@@ -470,7 +470,7 @@ declare namespace electronPackager {
      *
      * @category macOS
      */
-    protocols?: macOSProtocol[];
+    protocols?: MacOSProtocol[];
     /**
      * Walks the `node_modules` dependency tree to remove all of the packages specified in the
      * `devDependencies` section of `package.json` from the outputted Electron app.
@@ -515,7 +515,7 @@ declare namespace electronPackager {
      *
      * @category macOS
      */
-    usageDescription?: { [property: string]: string }
+    usageDescription?: { [property: string]: string };
     /**
      * Application metadata to embed into the Windows executable.
      * @category Windows
