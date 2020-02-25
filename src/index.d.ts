@@ -180,7 +180,7 @@ declare namespace electronPackager {
     afterPrune?: HookFunction[];
 
     /** When `true`, sets both [[arch]] and [[platform]] to `all`. */
-    all?: true;
+    all?: boolean;
     /*
      * The bundle identifier to use in the application's `Info.plist`.
      *
@@ -259,7 +259,7 @@ declare namespace electronPackager {
      *
      * **Note:** `asar` will have no effect if the [[prebuiltAsar]] option is set.
      */
-    asar?: true | AsarOptions;
+    asar?: boolean | AsarOptions;
     /**
      * The build version of the application. Defaults to the value of the [[appVersion]] option.
      * Maps to the `FileVersion` metadata property on Windows, and `CFBundleVersion` on macOS.
@@ -273,14 +273,14 @@ declare namespace electronPackager {
      *
      * @category macOS
      */
-    darwinDarkModeSupport?: true;
+    darwinDarkModeSupport?: boolean;
     /**
      * Whether symlinks should be dereferenced during the copying of the application source.
      * Defaults to `true`.
      *
      * **Note:** `derefSymlinks` will have no effect if the [[prebuiltAsar]] option is set.
      */
-    derefSymlinks?: false;
+    derefSymlinks?: boolean;
     /**
      * If present, passes custom options to [`@electron/get`](https://npm.im/@electron/get). See
      * the module for option descriptions, proxy support, and defaults. Supported parameters
@@ -387,7 +387,7 @@ declare namespace electronPackager {
      *
      * **Note:** `junk` will have no effect if the [[prebuiltAsar]] option is set.
      */
-    junk?: false;
+    junk?: boolean;
     /**
      * The application name. If omitted, it will use the `productName` or `name` value from the
      * nearest `package.json`.
@@ -428,7 +428,7 @@ declare namespace electronPackager {
      * Whether to replace an already existing output directory for a given platform (`true`) or
      * skip recreating it (`false`). Defaults to `false`.
      */
-    overwrite?: true;
+    overwrite?: boolean;
     /**
      * The target platform(s) to build for.
      *
@@ -479,14 +479,14 @@ declare namespace electronPackager {
      *
      * **Note:** `prune` will have no effect if the [[prebuiltAsar]] option is set.
      */
-    prune?: false;
+    prune?: boolean;
     /**
      * If `true`, disables printing informational and warning messages to the console when
      * packaging the application. This does not disable errors.
      *
      * Defaults to `false`.
      */
-    quiet?: true;
+    quiet?: boolean;
     /**
      * The base directory to use as a temporary directory. Set to `false` to disable use of a
      * temporary directory. Defaults to the system's temporary directory.
