@@ -21,6 +21,11 @@ if ! git branch --list | grep --quiet $PUBLISH_BRANCH; then
     git rm --cached .gitignore
     git rm --force -r .
     touch .nojekyll
+else
+    git checkout $PUBLISH_BRANCH
+    if test -d "$DOC_TARGET_DIR"; then
+        rm -r "$DOC_TARGET_DIR"
+    fi
 fi
 
 mv typedoc "$DOC_TARGET_DIR"
