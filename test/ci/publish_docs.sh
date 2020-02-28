@@ -16,6 +16,7 @@ else
     $(npm bin)/marked --gfm < docs/faq.md > faq.html
 fi
 
+git fetch origin
 if ! git branch --list | grep --quiet $PUBLISH_BRANCH; then
     git checkout --orphan $PUBLISH_BRANCH
     git rm --cached .gitignore
