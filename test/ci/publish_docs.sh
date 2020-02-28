@@ -1,6 +1,10 @@
 #!/bin/bash -xe
 
-GIT_REVISION="$1"
+if test -n "$1"; then
+    GIT_REVISION="$1"
+elif test -n "$GITHUB_REF"; then
+    GIT_REVISION="$(echo $GITHUB_REF | sed -e 's:refs/\(head\|tag\)s/::g')"
+fi
 
 if test -z "$PUBLISH_BRANCH"; then
     PUBLISH_BRANCH=gh-pages
