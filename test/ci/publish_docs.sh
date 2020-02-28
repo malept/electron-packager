@@ -17,7 +17,7 @@ else
 fi
 
 git fetch origin
-if ! git branch --list | grep --quiet $PUBLISH_BRANCH; then
+if ! git branch --list --remote | grep --quiet $PUBLISH_BRANCH; then
     git checkout --orphan $PUBLISH_BRANCH
     git rm --cached .gitignore
     git rm --force -r .
