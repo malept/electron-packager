@@ -13,8 +13,9 @@ const config = {
 
 const gitRevision = process.argv[2]
 if (gitRevision) {
-  config.gitRevision = gitRevision
-  if (gitRevision.startsWith('v')) {
+  if (/^[0-9a-f]+$/i.test(gitRevision)) {
+    config.gitRevision = gitRevision
+  } else if (gitRevision.startsWith('v')) {
     config.includeVersion = true
   }
 }
