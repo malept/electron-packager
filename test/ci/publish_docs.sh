@@ -6,15 +6,15 @@ if test -z "$PUBLISH_BRANCH"; then
     PUBLISH_BRANCH=gh-pages
 fi
 
-# TODO move typedoc args + .typedoc.json into its own typedoc script
-if test -z "$GIT_REVISION"; then
-    TYPEDOC_ARGS="-- --gitRevision $GIT_REVISION"
-    if test "${GIT_REVISION:0:1}" == "v"; then
-        TYPEDOC_ARGS="$TYPEDOC_ARGS --includeVersion"
-    fi
-fi
+npm run typedoc -- $GIT_REVISION
 
-npm run typedoc $TYPEDOC_ARGS
+if test -n "$GIT_REVISION"; then
+    DOC_TARGET_DIR="$GIT_REVISION"
+else
+    DOC_TARGET_DIR=master
+    $(npm bin)/marked --gfm < README.md > index.html
+    $(npm bin)/marked --gfm < docs/faq.md > faq.html
+fi
 
 if ! git branch --list | grep --quiet $PUBLISH_BRANCH; then
     git checkout --orphan $PUBLISH_BRANCH
@@ -23,7 +23,7 @@ if ! git branch --list | grep --quiet $PUBLISH_BRANCH; then
     touch .nojekyll
 fi
 
-mv typedoc/* .
+mv typedoc "$DOC_TARGET_DIR"
 
 git add .
 git config user.name "$GITHUB_ACTOR"
