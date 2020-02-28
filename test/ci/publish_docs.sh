@@ -16,8 +16,7 @@ if test -n "$GIT_REVISION"; then
     DOC_TARGET_DIR="$GIT_REVISION"
 else
     DOC_TARGET_DIR=master
-    $(npm bin)/marked --gfm < README.md > index.html
-    $(npm bin)/marked --gfm < docs/faq.md > faq.html
+    echo "<html><head><meta http-equiv='refresh' content='0; url=$DOC_TARGET_DIR/'></head></html>" > index.html
 fi
 
 git fetch origin
