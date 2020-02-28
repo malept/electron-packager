@@ -18,3 +18,5 @@ jobs:
           node-version: 12.x
       - run: npm install --engine-strict --no-lockfile
       - run: test/ci/publish_docs.sh
+        env:
+          DOCS_SSH_DEPLOY_KEY: ${{ secrets.DOCS_SSH_DEPLOY_KEY }}

@@ -25,8 +25,15 @@ fi
 
 mv typedoc "$DOC_TARGET_DIR"
 
+mkdir ~/.ssh
+echo "$DOCS_SSH_DEPLOY_KEY" > ~/.ssh/deploy_key
+chmod 400 ~/.ssh/deploy_key
+
+git remote rm origin
+git remote add origin "git@github.com:$GITHUB_REPOSITORY.git"
+
 git add .
 git config user.name "$GITHUB_ACTOR"
 git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
 git commit -m "Publish docs"
-git push origin $PUBLISH_BRANCH
+GIT_SSH_COMMAND="ssh -i ~/.ssh/deploy_key" git push origin $PUBLISH_BRANCH
