@@ -29,6 +29,4 @@ git add .
 git config user.name "$GITHUB_ACTOR"
 git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
 git commit -m "Publish docs"
-# git push $PUSH_ARGS origin $PUBLISH_BRANCH
-
-git checkout -
+git push origin $PUBLISH_BRANCH
