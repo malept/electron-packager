@@ -11,7 +11,16 @@ const config = {
   mode: 'file'
 }
 
-const gitRevision = process.argv[2]
+const replaceRef = /^refs\/(head|tag)s\//
+
+function gitRevisionFromGitHubRef () {
+  const githubRef = process.env.GITHUB_REF
+  if (githubRef) {
+    return githubRef.replace(replaceRef, '')
+  }
+}
+
+const gitRevision = process.argv[2] || gitRevisionFromGitHubRef()
 if (gitRevision) {
   if (/^[0-9a-f]+$/i.test(gitRevision)) {
     config.gitRevision = gitRevision
