@@ -72,12 +72,12 @@
     "ava": "ava test/index.js",
     "codecov": "nyc report --reporter=text-lcov > coverage.lcov && codecov",
     "coverage": "nyc npm run ava",
+    "docs:build": "node test/ci/build_docs.js",
     "lint": "npm run lint:js && npm run lint:ts",
     "lint:js": "eslint .",
     "lint:ts": "eslint --config .eslintrc.typescript.js --ext .ts .",
     "test": "npm run lint && npm run tsd && npm run coverage",
-    "tsd": "tsd",
-    "typedoc": "node test/ci/build_docs.js"
+    "tsd": "tsd"
   },
   "directories": {
     "test": "test"

@@ -13,10 +13,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+        run: git fetch --no-tags --prune --depth=1 origin +refs/heads/*:refs/remotes/origin/*
       - uses: actions/setup-node@v1
         with:
           node-version: 12.x
       - run: npm install --engine-strict --no-lockfile
-      - run: test/ci/publish_docs.sh
+      - run: npm run docs:build
+      - uses: malept/github-action-gh-pages@versioned-docs
+        with:
+          docsPath: typedoc
+          showUnderscoreFiles: true
+          versionDocs: true
         env:
           DOCS_SSH_DEPLOY_KEY: ${{ secrets.DOCS_SSH_DEPLOY_KEY }}
