@@ -20,7 +20,7 @@ jobs:
           node-version: 12.x
       - run: npm install --engine-strict --no-lockfile
       - run: npm run docs:build
-      - uses: malept/github-action-gh-pages@versioned-docs
+      - uses: docker://malept/gha-gh-pages@1.0.0
         with:
           docsPath: typedoc
           showUnderscoreFiles: true
