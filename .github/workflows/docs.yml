@@ -26,4 +26,5 @@ jobs:
           showUnderscoreFiles: true
           versionDocs: true
         env:
+          GH_PAGES_DEBUG: 1
           GH_PAGES_SSH_DEPLOY_KEY: ${{ secrets.DOCS_SSH_DEPLOY_KEY }}
