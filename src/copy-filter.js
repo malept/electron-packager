@@ -2,7 +2,9 @@
 
 const common = require('./common')
 const debug = require('debug')('electron-packager')
+const fs = require('fs-extra')
 const junk = require('junk')
+const micromatch = require('micromatch')
 const path = require('path')
 const prune = require('./prune')
 const targets = require('./targets')
@@ -52,6 +54,40 @@ function generateIgnoredOutDirs (opts) {
   return ignoredOutDirs
 }
 
+async function findMainScript (baseDir) {
+  const packageJSONPath = path.join(baseDir, 'package.json')
+  const { main } = await fs.readJson(packageJSONPath)
+  if (!main) {
+    throw new Error(`The app defined at "${packageJSONPath}" needs to have a "main" script defined.`)
+  }
+
+  return main
+}
+
+async function augmentIncludesWithDefaults (includes, baseDir) {
+  if (includes.length === 0) {
+    includes.push('.')
+  }
+  includes.push('package.json')
+  includes.push(await findMainScript(baseDir))
+}
+
+async function generateIncludeMatches (includes, baseDir) {
+  await augmentIncludesWithDefaults(includes, baseDir)
+
+  return Promise.all(includes.map(async pathOrGlob => {
+    const fullPath = path.resolve(baseDir, pathOrGlob)
+    if (await fs.pathExists(fullPath)) {
+      const stat = await fs.lstat(fullPath)
+      if (stat.isDirectory()) {
+        return micromatch.matcher(`{${fullPath},${fullPath}/**/*}`)
+      }
+    }
+
+    return micromatch.matcher(fullPath)
+  }))
+}
+
 function generateFilterFunction (ignore) {
   if (typeof (ignore) === 'function') {
     return file => !ignore(file)
@@ -64,13 +100,18 @@ function generateFilterFunction (ignore) {
   }
 }
 
-function userPathFilter (opts) {
+async function userPathFilter (opts) {
   const filterFunc = generateFilterFunction(opts.ignore || [])
   const ignoredOutDirs = generateIgnoredOutDirs(opts)
+  const includeMatches = await generateIncludeMatches(opts.include || [], opts.dir)
   const pruner = opts.prune ? new prune.Pruner(opts.dir) : null
 
   return async function filter (file) {
     const fullPath = path.resolve(file)
+
+    if (file !== opts.dir && includeMatches.length > 0 && !includeMatches.some(match => match(file))) {
+      return false
+    }
 
     if (ignoredOutDirs.includes(fullPath)) {
       return false

@@ -382,6 +382,24 @@ declare namespace electronPackager {
      */
     ignore?: RegExp | RegExp[] | IgnoreFunction;
     /**
+     * One or more file patterns to include in the app. A file pattern is the same as the [`files`
+     * field in `package.json`](https://docs.npmjs.com/files/package.json#files) _(except for the
+     * special files/directories listed, see below for the Electron app-specific files that are
+     * always included)_. This directive is processed before the entries in the [[ignore]] option.
+     * By default, all of the files/folders within the specified [[dir]] are eligible to be copied
+     * into the bundled app _([[ignore]], [[junk]], and [[prune]] options notwithstanding)_.
+     *
+     * Two files are always included: the `package.json` in the specified [[dir]], and the file
+     * specified by the `main` field in the aforementioned `package.json` file.
+     *
+     * If this option is used and a bundler such as Webpack or Parcel is not in use, it is
+     * recommended to add `node_modules` to the list in order to ensure the app dependencies are
+     * copied to the app.
+     *
+     * **Note:** `include` will have no effect if the [[prebuiltAsar]] option is set.
+     */
+    include?: string[];
+    /**
      * Ignores [system junk files](https://github.com/sindresorhus/junk) when copying the Electron app,
      * regardless of the [[ignore]] option.
      *
@@ -461,6 +479,7 @@ declare namespace electronPackager {
      * - [[afterPrune]]
      * - [[derefSymlinks]]
      * - [[ignore]]
+     * - [[include]]
      * - [[junk]]
      * - [[prune]]
      */

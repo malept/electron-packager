@@ -20,19 +20,19 @@ async function assertOutDirIgnored (t, opts, existingDirectoryPath, pathToIgnore
   await util.assertPathNotExists(t, path.join(resourcesPath, 'app', ignoredBasenameToCheck), 'Out dir must not exist in output app directory')
 }
 
-async function copyDirToTempDirWithIgnores (t, opts) {
+async function copyDirToTempDirWithFilters (t, opts) {
   copyFilter.populateIgnoredPaths(opts)
   const targetDir = path.join(t.context.tempDir, 'result')
-  await fs.copy(opts.dir, targetDir, { dereference: false, filter: copyFilter.userPathFilter(opts) })
+  await fs.copy(opts.dir, targetDir, { dereference: false, filter: await copyFilter.userPathFilter(opts) })
   return targetDir
 }
 
 async function assertFileIgnored (t, targetDir, ignoredFile) {
-  await util.assertPathNotExists(t, path.join(targetDir, ignoredFile), `Ignored file '${ignoredFile}' should not exist in copied directory`)
+  await util.assertPathNotExists(t, path.join(targetDir, ignoredFile), `'${ignoredFile}' should not exist in copied directory`)
 }
 
-async function assertFileNotIgnored (t, targetDir, notIgnoredFile) {
-  await util.assertPathExists(t, path.join(targetDir, notIgnoredFile), `The expected output directory should exist and contain ${notIgnoredFile}`)
+async function assertFileIncluded (t, targetDir, includedFile) {
+  await util.assertPathExists(t, path.join(targetDir, includedFile), `The expected output directory should exist and contain ${includedFile}`)
 }
 
 async function ignoreTest (t, opts, ignorePattern, ignoredFile) {
@@ -41,9 +41,9 @@ async function ignoreTest (t, opts, ignorePattern, ignoredFile) {
     opts.ignore = ignorePattern
   }
 
-  const targetDir = await copyDirToTempDirWithIgnores(t, opts)
+  const targetDir = await copyDirToTempDirWithFilters(t, opts)
   await assertFileIgnored(t, targetDir, ignoredFile)
-  await assertFileNotIgnored(t, targetDir, 'package.json')
+  await assertFileIncluded(t, targetDir, 'package.json')
 }
 
 async function ignoreOutDirTest (t, opts, distPath) {
@@ -87,14 +87,48 @@ test('ignore: only match subfolder of app', util.testSinglePlatform(ignoreTest, 
 
 test('ignore: junk by default', util.testSinglePlatform(async (t, opts) => {
   opts.dir = util.fixtureSubdir('ignore-junk')
-  const targetDir = await copyDirToTempDirWithIgnores(t, opts)
+  const targetDir = await copyDirToTempDirWithFilters(t, opts)
   await assertFileIgnored(t, targetDir, 'subfolder/Thumbs.db')
 }))
 test('ignore: not junk when junk: false', util.testSinglePlatform(async (t, opts) => {
   opts.dir = util.fixtureSubdir('ignore-junk')
   opts.junk = false
-  const targetDir = await copyDirToTempDirWithIgnores(t, opts)
-  await assertFileNotIgnored(t, targetDir, 'subfolder/Thumbs.db')
+  const targetDir = await copyDirToTempDirWithFilters(t, opts)
+  await assertFileIncluded(t, targetDir, 'subfolder/Thumbs.db')
+}))
+
+test('include: specify file', util.testSinglePlatform(async (t, opts) => {
+  opts.dir = util.fixtureSubdir('basic')
+  opts.include = ['index.html']
+  const targetDir = await copyDirToTempDirWithFilters(t, opts)
+  await assertFileIncluded(t, targetDir, 'index.html')
+  await assertFileIgnored(t, targetDir, 'node_modules/ncp/package.json')
+}))
+
+test('include: specify folder & check defaults', util.testSinglePlatform(async (t, opts) => {
+  opts.dir = util.fixtureSubdir('basic')
+  opts.include = ['node_modules/']
+  const targetDir = await copyDirToTempDirWithFilters(t, opts)
+  await assertFileIncluded(t, targetDir, 'node_modules/ncp/package.json')
+  await assertFileIgnored(t, targetDir, 'index.html')
+  // defaults
+  await assertFileIncluded(t, targetDir, 'package.json')
+  await assertFileIncluded(t, targetDir, 'main.js')
+}))
+
+test.skip('include: specify glob', util.testSinglePlatform(async (t, opts) => {
+  opts.dir = util.fixtureSubdir('basic')
+  opts.include = ['node_modules/{ncp,run-series}/package.json']
+  const targetDir = await copyDirToTempDirWithFilters(t, opts)
+  await assertFileIncluded(t, targetDir, 'node_modules/ncp/package.json')
+  await assertFileIncluded(t, targetDir, 'node_modules/run-series/package.json')
+  await assertFileIgnored(t, targetDir, 'node_modules/run-waterfall/package.json')
+  await assertFileIgnored(t, targetDir, 'index.html')
+}))
+
+test('include: app needs to have a "main" key in package.json', util.testSinglePlatform(async (t, opts) => {
+  opts.dir = util.fixtureSubdir('include-no-main')
+  await t.throwsAsync(copyDirToTempDirWithFilters(t, opts), { message: /^The app .* needs to have a "main" script defined\.$/ })
 }))
 
 test.serial('ignore out dir', util.testSinglePlatform(ignoreOutDirTest, 'ignoredOutDir'))
